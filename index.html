@@ -233,6 +233,37 @@
   <button class="btn-setup" id="btnStart" onclick="startApp()" disabled>⚡ Iniciar meu app</button>
 </div>
 
+<!-- ── PROFILE EDIT MODAL ── -->
+<div class="modal-overlay" id="profileModal" onclick="if(event.target===this)closeProfile()">
+  <div class="modal-box">
+    <div class="modal-drag"></div>
+    <div class="modal-title">👤 Editar Perfil</div>
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="pName" type="text" placeholder="Nome completo"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="pWeight" type="number" inputmode="decimal" placeholder="84"></div>
+      <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="pHeight" type="number" inputmode="decimal" placeholder="173"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label class="form-label">Idade</label><input class="form-input" id="pAge" type="number" inputmode="numeric" placeholder="16"></div>
+      <div class="form-group"><label class="form-label">Objetivo</label><input class="form-input" id="pGoal" type="text" placeholder="Ganhar massa"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" style="margin-bottom:8px">Recuperação ativa — quarta-feira</label>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;cursor:pointer" onclick="toggleRehab()">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--text)" id="rehabLabel">Ativada 🦵</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px" id="rehabDesc">Quarta fica reservada para reabilitação</div>
+        </div>
+        <div id="rehabToggle" style="width:46px;height:26px;border-radius:13px;transition:background .25s;position:relative;flex-shrink:0">
+          <div id="rehabThumb" style="position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:left .25s"></div>
+        </div>
+      </div>
+    </div>
+    <button class="modal-close-btn" onclick="saveProfile()">✓ Salvar alterações</button>
+    <button class="modal-close-btn ghost" onclick="closeProfile()">Cancelar</button>
+  </div>
+</div>
+
 <!-- ── INSTALL MODAL ── -->
 <div class="modal-overlay" id="installModal" onclick="if(event.target===this)closeInstall()">
   <div class="modal-box">
@@ -282,8 +313,8 @@
       <div class="header-sub">Gymcana · Tarde · 5x semana</div>
     </div>
     <div class="header-actions">
+      <button class="btn-sm btn-ghost" onclick="openProfile()">👤 Perfil</button>
       <button class="btn-sm btn-ghost" onclick="openInstall()">📱</button>
-      <button class="btn-sm btn-accent" onclick="openInstall()">Instalar</button>
     </div>
   </header>
 
@@ -375,9 +406,10 @@ function applyProfile(profile) {
 
 // ── Default exercises ─────────────────────────────────────────────
 const defaultDays = {
-  seg:{label:'TREINO A',title:'COSTAS · OMBRO',duration:'~55 min',series:'9 séries',tip:'<strong>Método Cluster:</strong> Faça as reps, descanse 15–20s dentro da série sem soltar o peso, e continue. É muito mais intenso que uma série normal. Foca em tensão muscular máxima.',muscles:['Dorsal','Deltóide Médio','Trapézio'],exercises:[
+  seg:{label:'TREINO A',title:'COSTAS · OMBRO',duration:'~60 min',series:'12 séries',tip:'<strong>Método Cluster:</strong> Faça as reps, descanse 15–20s dentro da série sem soltar o peso, e continue. É muito mais intenso que uma série normal. Foca em tensão muscular máxima.',muscles:['Dorsal','Deltóide Médio','Trapézio'],exercises:[
     {name:'Puxada Alta Aberta',target:'Dorsal — largura',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'CLUSTER: escolha um peso que consiga ~6 reps. Faça 4 reps, descanse 15–20s, faça mais 4. Isso é 1 cluster. NORMAL + DROP: faça até a falha, reduza 20–30% do peso imediatamente e continue até falhar de novo.'},
     {name:'Puxada Alta Triângulo',target:'Dorsal — espessura e bíceps',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'Mesma lógica da puxada aberta. O triângulo ativa mais a parte interna do dorsal e o bíceps. Cotovelos puxam para baixo e para os lados do tronco.'},
+    {name:'Remada Curvada no Smith',target:'Dorsal médio — espessura e força',sets:'3 × cluster',rest:'90s',numSets:3,tip:'CLUSTER: tronco inclinado a ~45°, barra no Smith. Faça 4 reps, descanse 15–20s dentro da série, faça mais 4. Puxe até o umbigo, não o peito. Core ativado e lombar reta o tempo todo.'},
     {name:'Elevação Lateral',target:'Deltóide médio — largura de ombros',sets:'3 séries (2 cluster + 1 unilateral+drop)',rest:'75s',numSets:3,tip:'SÉRIES 1–2 (Cluster bilateral): 4 reps + 15s pausa + 4 reps. SÉRIE 3 (Unilateral + Drop): um braço de cada vez até a falha, reduz o peso e finaliza. Nunca balance o corpo — movimento lento e controlado.'}
   ]},
   ter:{label:'TREINO B',title:'PEITO · TRÍCEPS',duration:'~50 min',series:'10 séries',tip:'<strong>Dica do dia:</strong> Dia de peito — desça o supino de forma controlada (2s na descida). Sinta o peitoral alongar na fase negativa. Isso é o que gera hipertrofia de verdade.',muscles:['Peitoral','Tríceps'],exercises:[
@@ -391,9 +423,10 @@ const defaultDays = {
     {name:'Rosca Martelo com Halteres',target:'Braquial e antebraço',sets:'3 × 12',rest:'60s',numSets:3,tip:'Pegada neutra (como um martelo). Trabalha o braquial, que empurra o bíceps para cima visualmente.'},
     {name:'Prancha Abdominal',target:'Core — estabilização',sets:'3 × 45s',rest:'45s',numSets:3,tip:'Corpo reto da cabeça ao calcanhar. Ative o abdômen, não deixe o quadril subir nem cair. Ótimo para estabilidade e reabilitação.'}
   ]},
-  sex:{label:'TREINO A2',title:'COSTAS · OMBRO',duration:'~55 min',series:'9 séries',tip:'<strong>Segunda sessão de Costas + Ombro:</strong> Tente aumentar o peso no cluster em relação à segunda. Sobrecarga progressiva = crescimento real.',muscles:['Dorsal','Deltóide Médio','Trapézio'],exercises:[
+  sex:{label:'TREINO A2',title:'COSTAS · OMBRO',duration:'~60 min',series:'12 séries',tip:'<strong>Segunda sessão de Costas + Ombro:</strong> Tente aumentar o peso no cluster em relação à segunda. Sobrecarga progressiva = crescimento real.',muscles:['Dorsal','Deltóide Médio','Trapézio'],exercises:[
     {name:'Puxada Alta Aberta',target:'Dorsal — largura',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'Segunda sessão da semana. Tente aumentar o peso do cluster em relação à segunda-feira.'},
     {name:'Puxada Alta Triângulo',target:'Dorsal — espessura e bíceps',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'Mesma execução da segunda. Foco na contração do dorsal no ponto mais baixo do movimento.'},
+    {name:'Remada Curvada no Smith',target:'Dorsal médio — espessura e força',sets:'3 × cluster',rest:'90s',numSets:3,tip:'Tente aumentar o peso em relação à segunda. Tronco a 45°, puxe até o umbigo, core ativado.'},
     {name:'Elevação Lateral',target:'Deltóide médio — largura de ombros',sets:'3 séries (2 cluster + 1 unilateral+drop)',rest:'75s',numSets:3,tip:'Tente aumentar o peso do cluster em relação à segunda. Nunca balance o corpo.'}
   ]}
 };
@@ -421,6 +454,61 @@ function saveWeights(dk,idx,arr){
   localStorage.setItem(k,JSON.stringify(f.slice(0,8)));
 }
 function getHistory(dk,idx){return JSON.parse(localStorage.getItem(weightKey(dk,idx))||'[]');}
+
+// ── Profile modal ─────────────────────────────────────────────────
+let rehabActive = true;
+try { rehabActive = JSON.parse(localStorage.getItem('gymcana_rehab') ?? 'true'); } catch(e) {}
+
+function updateRehabToggleUI() {
+  const tog = document.getElementById('rehabToggle');
+  const thumb = document.getElementById('rehabThumb');
+  const label = document.getElementById('rehabLabel');
+  const desc = document.getElementById('rehabDesc');
+  if (!tog) return;
+  tog.style.background = rehabActive ? '#ff8c42' : 'var(--border)';
+  thumb.style.left = rehabActive ? '23px' : '3px';
+  label.textContent = rehabActive ? 'Ativada 🦵' : 'Desativada ✅';
+  desc.textContent = rehabActive ? 'Quarta reservada para reabilitação' : 'Quarta vira dia de treino normal';
+}
+
+function toggleRehab() {
+  rehabActive = !rehabActive;
+  updateRehabToggleUI();
+}
+
+function openProfile() {
+  const p = JSON.parse(localStorage.getItem('treino_profile') || '{}');
+  document.getElementById('pName').value = p.name || '';
+  document.getElementById('pWeight').value = p.weight || '';
+  document.getElementById('pHeight').value = p.height || '';
+  document.getElementById('pAge').value = p.age || '';
+  document.getElementById('pGoal').value = p.goal || '';
+  updateRehabToggleUI();
+  document.getElementById('profileModal').classList.add('open');
+}
+
+function closeProfile() { document.getElementById('profileModal').classList.remove('open'); }
+
+function saveProfile() {
+  const p = JSON.parse(localStorage.getItem('treino_profile') || '{}');
+  p.name   = document.getElementById('pName').value.trim() || p.name;
+  p.weight = document.getElementById('pWeight').value.trim() || p.weight;
+  p.height = document.getElementById('pHeight').value.trim() || p.height;
+  p.age    = document.getElementById('pAge').value.trim() || p.age;
+  p.goal   = document.getElementById('pGoal').value.trim() || p.goal;
+  localStorage.setItem('treino_profile', JSON.stringify(p));
+  localStorage.setItem('gymcana_rehab', JSON.stringify(rehabActive));
+  // Atualiza qua conforme toggle
+  if (rehabActive) {
+    days['qua'] = {label:'DESCANSO',title:'RECUPERAÇÃO ATIVA',duration:'—',series:'—',tip:'<strong>⚠️ Reabilitação do joelho:</strong> Sem treino de carga hoje. Mobilidade e fisioterapia com orientação médica.',muscles:[],exercises:[]};
+  } else {
+    days['qua'] = {label:'TREINO EXTRA',title:'DEFINA SEU TREINO',duration:'—',series:'—',tip:'<strong>Recuperação concluída!</strong> Este dia está liberado. Use o botão abaixo para adicionar seus exercícios.',muscles:[],exercises:[]};
+  }
+  saveDays();
+  applyProfile(p);
+  closeProfile();
+  if (currentDay) render(currentDay);
+}
 
 function openInstall(){document.getElementById('installModal').classList.add('open');}
 function closeInstall(){document.getElementById('installModal').classList.remove('open');}
@@ -571,6 +659,12 @@ function initApp(){
     applyProfile(p);
   } catch(e) {
     applyProfile(lucaProfile);
+  }
+  // Aplica estado do rehab salvo
+  try { rehabActive = JSON.parse(localStorage.getItem('gymcana_rehab') ?? 'true'); } catch(e) { rehabActive = true; }
+  if (!rehabActive) {
+    days['qua'] = {label:'TREINO EXTRA',title:'DEFINA SEU TREINO',duration:'—',series:'—',tip:'<strong>Recuperação concluída!</strong> Este dia está liberado. Adicione seus exercícios abaixo.',muscles:[],exercises:[]};
+    saveDays();
   }
   document.getElementById('setupScreen').classList.remove('active');
   document.getElementById('mainApp').style.display='block';
