@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Gymcana">
 <meta name="theme-color" content="#0d0d0d">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gymcana – Treino Luca</title>
+<title>Gymcana – Treino do Luca</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
   :root {
@@ -19,6 +19,32 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;padding-bottom:80px;}
+
+  /* ── SETUP SCREEN ── */
+  .setup-screen{display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;overflow-y:auto;padding:32px 20px 60px;}
+  .setup-screen.active{display:block;}
+  .setup-logo{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;color:var(--accent);margin-bottom:4px;}
+  .setup-subtitle{font-size:13px;color:var(--muted);margin-bottom:28px;}
+  .setup-section{margin-bottom:20px;}
+  .setup-section-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+  .form-group{margin-bottom:13px;}
+  .form-label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:5px;}
+  .form-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:10px 13px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+  .form-input:focus{border-color:var(--accent);}
+  .form-input::placeholder{color:#555;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
+  .color-opt{padding:10px 6px;border-radius:9px;border:2px solid var(--border);cursor:pointer;text-align:center;font-size:11px;font-weight:700;transition:all .2s;background:var(--card);}
+  .color-opt.selected{border-color:var(--accent);background:#1e1e00;color:var(--accent);}
+  .terms-box{background:#0d0d0d;border:1px solid var(--border);border-radius:9px;padding:13px;font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+  .terms-box strong{color:var(--text);}
+  .checkbox-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px;cursor:pointer;}
+  .checkbox-row input[type=checkbox]{width:18px;height:18px;min-width:18px;margin-top:1px;accent-color:var(--accent);cursor:pointer;}
+  .checkbox-row span{font-size:12px;color:var(--muted);line-height:1.5;}
+  .btn-setup{width:100%;background:var(--accent);color:#000;border:none;border-radius:10px;padding:14px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;letter-spacing:.5px;}
+  .btn-setup:disabled{opacity:.4;cursor:not-allowed;}
+
+  /* ── MAIN APP ── */
   header{background:var(--surface);border-bottom:1px solid var(--border);padding:13px 17px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;}
   .header-left{display:flex;flex-direction:column;gap:1px;}
   .header-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent);line-height:1;}
@@ -27,13 +53,12 @@
   .btn-sm{border:none;border-radius:18px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;}
   .btn-accent{background:var(--accent);color:#000;}
   .btn-ghost{background:var(--card);color:var(--muted);border:1px solid var(--border);}
-  .hero{background:linear-gradient(135deg,rgba(232,255,71,.08) 0%,#0d1a00 50%,#0d0d0d 100%);padding:18px 17px 14px;border-bottom:1px solid var(--border);}
+  .hero{background:linear-gradient(135deg,rgba(var(--accent-rgb),.08) 0%,#0d1a00 50%,#0d0d0d 100%);padding:18px 17px 14px;border-bottom:1px solid var(--border);}
   .hero-label{font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:4px;}
-  .hero-title{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;letter-spacing:2px;margin-bottom:8px;}
-  .hero-stats{display:flex;gap:8px;flex-wrap:wrap;}
-  .stat-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 11px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
+  .hero-title{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;letter-spacing:2px;margin-bottom:6px;}
+  .hero-stats{display:flex;gap:10px;flex-wrap:wrap;}
+  .stat-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
   .stat-chip span{color:var(--accent);font-weight:700;}
-  .alert-chip{background:#1a0d00;border:1px solid #4a2000;border-radius:20px;padding:4px 11px;font-size:11px;font-weight:600;color:#ff8c42;}
   .week-nav{display:flex;padding:10px 17px 0;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;}
   .day-tab{flex:1;min-width:56px;padding:7px 3px 9px;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase;}
   .day-tab .dl{display:block;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;margin-bottom:1px;}
@@ -45,10 +70,8 @@
   .training-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;margin-bottom:5px;}
   .training-meta{display:flex;gap:11px;font-size:11px;color:var(--muted);flex-wrap:wrap;}
   .today-marker{background:var(--accent);color:#000;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 6px;border-radius:3px;display:inline-block;margin-bottom:4px;}
-  .tip-box{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);border-left:3px solid var(--accent);border-radius:8px;padding:9px 12px;font-size:12px;color:#d4d4a0;margin:11px 0;line-height:1.5;}
+  .tip-box{background:rgba(var(--accent-rgb),.05);border:1px solid rgba(var(--accent-rgb),.15);border-left:3px solid var(--accent);border-radius:8px;padding:9px 12px;font-size:12px;color:#d4d4a0;margin:11px 0;line-height:1.5;}
   .tip-box strong{color:var(--accent);}
-  .warning-box{background:#1a0800;border:1px solid #4a2000;border-left:3px solid #ff8c42;border-radius:8px;padding:9px 12px;font-size:12px;color:#ffb47a;margin:11px 0;line-height:1.5;}
-  .warning-box strong{color:#ff8c42;}
   .muscles{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
   .muscle-tag{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;}
   .section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);}
@@ -69,7 +92,6 @@
   .ex-target{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
   .ex-sets{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
   .set-pill{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;}
-  .set-pill.cluster{background:#1a1a00;border-color:#3a3a00;color:var(--accent);}
   .ex-tip-text{font-size:12px;color:#777;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.4;display:none;}
   .exercise-card.expanded .ex-tip-text{display:block;}
   .card-actions{display:flex;gap:5px;align-items:center;}
@@ -104,6 +126,10 @@
   .h-sets{display:flex;gap:3px;flex-wrap:wrap;flex:1;justify-content:flex-end;}
   .h-set-badge{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:11px;font-weight:700;}
   .h-empty{font-size:12px;color:var(--muted);text-align:center;padding:6px 0;font-style:italic;}
+  .nutrition-card{background:#0d1020;border:1px solid #1e2040;border-left:3px solid #6b7fff;border-radius:8px;padding:10px 12px;margin-bottom:7px;}
+  .nutrition-card h4{font-size:12px;font-weight:700;color:#a0a8ff;margin-bottom:3px;}
+  .nutrition-card p{font-size:12px;color:var(--muted);line-height:1.5;}
+  .nutrition-card .alert{color:var(--accent2);font-weight:600;}
   .rest-screen{text-align:center;padding:50px 20px;}
   .rest-icon{font-size:50px;margin-bottom:12px;display:block;}
   .rest-screen h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:6px;color:var(--muted);}
@@ -122,55 +148,124 @@
   .step-body strong{display:block;font-size:13px;margin-bottom:2px;}
   .step-body p{font-size:12px;color:var(--muted);line-height:1.5;}
   .step-icon{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:12px;margin:2px 2px 0;}
-  .form-group{margin-bottom:12px;}
-  .form-label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:5px;}
-  .form-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
-  .form-input:focus{border-color:var(--accent);}
+  .android-note{background:#0d1020;border:1px solid #1e2040;border-radius:7px;padding:8px 10px;font-size:11px;color:#a0a8ff;margin-top:12px;line-height:1.5;}
   .btn-danger{background:#2a0d0d;color:#ff6b6b;border:1px solid #4a1a1a;border-radius:8px;padding:9px 13px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;}
   .btn-primary{flex:1;background:var(--accent);color:#000;border:none;border-radius:8px;padding:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
   .form-actions{display:flex;gap:7px;margin-top:14px;align-items:center;}
   .btn-add-ex{width:100%;background:var(--card);border:1px dashed var(--border);border-radius:10px;padding:11px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;margin-top:3px;}
   .btn-add-ex:hover{border-color:var(--accent);color:var(--accent);}
-  .nutrition-card{background:#0d1020;border:1px solid #1e2040;border-left:3px solid #6b7fff;border-radius:8px;padding:10px 12px;margin-bottom:7px;}
-  .nutrition-card h4{font-size:12px;font-weight:700;color:#a0a8ff;margin-bottom:3px;}
-  .nutrition-card p{font-size:12px;color:var(--muted);line-height:1.5;}
-  .nutrition-card .alert{color:var(--accent2);font-weight:600;}
+
+  /* profile card */
+  .profile-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .profile-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .profile-stat{text-align:center;flex:1;min-width:60px;}
+  .profile-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);line-height:1;}
+  .profile-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .profile-divider{width:1px;background:var(--border);align-self:stretch;}
+  .profile-goal{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+  .profile-goal strong{color:var(--text);}
 </style>
 </head>
 <body>
 
-<!-- INSTALL MODAL -->
+<!-- ── SETUP SCREEN ── -->
+<div class="setup-screen active" id="setupScreen">
+  <div class="setup-logo">⚡ MEU TREINO</div>
+  <div class="setup-subtitle">Configure seu aplicativo personalizado</div>
+
+  <div class="setup-section">
+    <div class="setup-section-title">👤 Seus dados</div>
+    <div class="form-group">
+      <label class="form-label">Seu nome</label>
+      <input class="form-input" id="sName" type="text" placeholder="Ex: João Silva">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Peso (kg)</label>
+        <input class="form-input" id="sWeight" type="number" inputmode="decimal" placeholder="Ex: 80">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Altura (cm)</label>
+        <input class="form-input" id="sHeight" type="number" inputmode="decimal" placeholder="Ex: 178">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Idade</label>
+        <input class="form-input" id="sAge" type="number" inputmode="numeric" placeholder="Ex: 27">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Objetivo</label>
+        <input class="form-input" id="sGoal" type="text" placeholder="Ex: Ganhar massa">
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-section">
+    <div class="setup-section-title">🎨 Cor tema do app</div>
+    <div class="color-grid" id="colorGrid">
+      <div class="color-opt selected" data-color="#e8ff47" data-rgb="232,255,71" data-name="Amarelo" onclick="selectColor(this)">🟡<br>Amarelo</div>
+      <div class="color-opt" data-color="#00c8ff" data-rgb="0,200,255" data-name="Azul" onclick="selectColor(this)">🔵<br>Azul</div>
+      <div class="color-opt" data-color="#39ff14" data-rgb="57,255,20" data-name="Verde" onclick="selectColor(this)">🟢<br>Verde</div>
+      <div class="color-opt" data-color="#ff3b3b" data-rgb="255,59,59" data-name="Vermelho" onclick="selectColor(this)">🔴<br>Vermelho</div>
+      <div class="color-opt" data-color="#bf7fff" data-rgb="191,127,255" data-name="Roxo" onclick="selectColor(this)">🟣<br>Roxo</div>
+      <div class="color-opt" data-color="#ff6eb4" data-rgb="255,110,180" data-name="Rosa" onclick="selectColor(this)">🩷<br>Rosa</div>
+      <div class="color-opt" data-color="#ff8c00" data-rgb="255,140,0" data-name="Laranja" onclick="selectColor(this)">🟠<br>Laranja</div>
+      <div class="color-opt" data-color="#e0e0e0" data-rgb="224,224,224" data-name="Branco" onclick="selectColor(this)">⚪<br>Branco</div>
+    </div>
+  </div>
+
+  <div class="setup-section">
+    <div class="setup-section-title">📋 Termos e condições</div>
+    <div class="terms-box">
+      Ao usar este aplicativo, você declara que:<br><br>
+      <strong>1.</strong> Os dados informados são verdadeiros e de sua responsabilidade.<br>
+      <strong>2.</strong> As informações (nome, peso, altura) são utilizadas exclusivamente para personalizar este app de treino.<br>
+      <strong>3.</strong> Seus dados não serão compartilhados com terceiros.<br>
+      <strong>4.</strong> Este aplicativo foi desenvolvido pela <strong>Agência NOOMA</strong> e é de uso pessoal e intransferível.
+    </div>
+    <label class="checkbox-row" id="termsRow">
+      <input type="checkbox" id="termsCheck" onchange="validateSetup()">
+      <span>Li e concordo com os termos e condições acima e autorizo o uso dos meus dados para personalização do aplicativo.</span>
+    </label>
+  </div>
+
+  <button class="btn-setup" id="btnStart" onclick="startApp()" disabled>⚡ Iniciar meu app</button>
+</div>
+
+<!-- ── INSTALL MODAL ── -->
 <div class="modal-overlay" id="installModal" onclick="if(event.target===this)closeInstall()">
   <div class="modal-box">
     <div class="modal-drag"></div>
-    <div class="modal-title">📱 Adicionar na Tela Inicial</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Siga os passos abaixo para instalar o Gymcana no seu Samsung como um app de verdade.</div>
-    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700;">🤖 Samsung / Android (Chrome)</div>
-    <div class="install-step"><div class="step-num">1</div><div class="step-body"><strong>Abra no Chrome</strong><p>Certifique-se de estar usando o Google Chrome no seu celular. Se o link abriu em outro navegador, copie a URL e cole no Chrome.</p></div></div>
-    <div class="install-step"><div class="step-num">2</div><div class="step-body"><strong>Toque nos 3 pontinhos ⋮</strong><p>Fica no canto superior direito da tela, na barra do Chrome.</p></div></div>
-    <div class="install-step"><div class="step-num">3</div><div class="step-body"><strong>Toque em "Adicionar à tela inicial"</strong><p>Role o menu até encontrar essa opção. Vai aparecer uma caixa de confirmação com o nome "Gymcana".</p></div></div>
-    <div class="install-step"><div class="step-num">4</div><div class="step-body"><strong>Confirme e pronto! 🎉</strong><p>O ícone do Gymcana vai aparecer na sua tela inicial. Abre em tela cheia, sem barra do Chrome, igual um app de verdade. Seus pesos e treinos ficam salvos no celular.</p></div></div>
-    <button class="modal-close-btn" onclick="closeInstall()">Entendi, vamos treinar!</button>
+    <div class="modal-title">📱 Usar no Celular</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Adicione como app na tela inicial — abre em tela cheia, igual um app de verdade.</div>
+    <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700;">🍎 iPhone (Safari)</div>
+    <div class="install-step"><div class="step-num">1</div><div class="step-body"><strong>Abra no Safari</strong><p>Não funciona no Chrome nem no Instagram — use o Safari.</p></div></div>
+    <div class="install-step"><div class="step-num">2</div><div class="step-body"><strong>Toque em Compartilhar ⬆️</strong><p>Ícone de caixa com seta na barra inferior.</p></div></div>
+    <div class="install-step"><div class="step-num">3</div><div class="step-body"><strong>Adicionar à Tela de Início</strong><p>Role o menu e toque em <span class="step-icon">+ Adicionar à Tela de Início</span>. Confirme e toque em <span class="step-icon">Adicionar</span>.</p></div></div>
+    <div class="install-step"><div class="step-num">4</div><div class="step-body"><strong>Pronto! 🎉</strong><p>Ícone na tela inicial. Seus dados e pesos ficam salvos no celular.</p></div></div>
+    <div class="android-note"><strong>📱 Android (Chrome):</strong> 3 pontinhos ⋮ → "Adicionar à tela inicial".</div>
+    <button class="modal-close-btn" onclick="closeInstall()">Entendi, fechar</button>
   </div>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- ── EDIT MODAL ── -->
 <div class="modal-overlay" id="editModal" onclick="if(event.target===this)closeEdit()">
   <div class="modal-box">
     <div class="modal-drag"></div>
     <div class="modal-title" id="editModalTitle">✏️ Editar Exercício</div>
     <input type="hidden" id="editDayKey">
     <input type="hidden" id="editExIdx">
-    <div class="form-group"><label class="form-label">Nome do exercício</label><input class="form-input" id="editName" type="text"></div>
-    <div class="form-group"><label class="form-label">Músculo alvo</label><input class="form-input" id="editTarget" type="text"></div>
+    <div class="form-group"><label class="form-label">Nome do exercício</label><input class="form-input" id="editName" type="text" placeholder="Ex: Supino Reto com Barra"></div>
+    <div class="form-group"><label class="form-label">Músculo alvo</label><input class="form-input" id="editTarget" type="text" placeholder="Ex: Peitoral — foco total"></div>
     <div class="form-group">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;">
-        <div><label class="form-label">Séries</label><input class="form-input" id="editSets" type="number" min="1" max="10"></div>
-        <div><label class="form-label">Reps</label><input class="form-input" id="editReps" type="text" placeholder="8–10"></div>
-        <div><label class="form-label">Descanso</label><input class="form-input" id="editRest" type="text" placeholder="60s"></div>
+        <div><label class="form-label">Séries</label><input class="form-input" id="editSets" type="number" min="1" max="10" placeholder="4"></div>
+        <div><label class="form-label">Repetições</label><input class="form-input" id="editReps" type="text" placeholder="8–10"></div>
+        <div><label class="form-label">Descanso</label><input class="form-input" id="editRest" type="text" placeholder="90s"></div>
       </div>
     </div>
-    <div class="form-group"><label class="form-label">Dica de execução (opcional)</label><input class="form-input" id="editTip" type="text"></div>
+    <div class="form-group"><label class="form-label">Dica de execução (opcional)</label><input class="form-input" id="editTip" type="text" placeholder="Ex: Controle a descida por 2 segundos..."></div>
     <div class="form-actions">
       <button class="btn-danger" id="deleteBtn" onclick="deleteExercise()">🗑 Excluir</button>
       <button class="btn-primary" onclick="saveExercise()">✓ Salvar</button>
@@ -179,71 +274,144 @@
   </div>
 </div>
 
-<!-- MAIN APP -->
-<header>
-  <div class="header-left">
-    <div class="header-name">⚡ GYMCANA</div>
-    <div class="header-sub">Treino do Luca · Tarde · 5x semana</div>
-  </div>
-  <div class="header-actions">
-    <button class="btn-sm btn-ghost" onclick="openInstall()">📱 Instalar</button>
-  </div>
-</header>
+<!-- ── MAIN APP ── -->
+<div id="mainApp" style="display:none;">
+  <header>
+    <div class="header-left">
+      <div class="header-name" id="appHeaderName">⚡ MEU TREINO</div>
+      <div class="header-sub">Gymcana · Tarde · 5x semana</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-sm btn-ghost" onclick="openInstall()">📱</button>
+      <button class="btn-sm btn-accent" onclick="openInstall()">Instalar</button>
+    </div>
+  </header>
 
-<div class="hero">
-  <div class="hero-label">Programa Personalizado</div>
-  <div class="hero-title">FORÇA &<br>VOLUME</div>
-  <div class="hero-stats">
-    <div class="stat-chip">⚖️ <span>84kg</span></div>
-    <div class="stat-chip">📏 <span>173cm</span></div>
-    <div class="stat-chip">🎂 <span>16 anos</span></div>
-    <div class="stat-chip">🎯 <span>Massa muscular</span></div>
-    <div class="alert-chip">🦵 Reabilitação joelho</div>
+  <div class="hero">
+    <div class="hero-label">Programa Semanal</div>
+    <div class="hero-title" id="heroTitle">FORÇA &<br>MÚSCULO</div>
+    <div class="hero-stats" id="heroStats"></div>
   </div>
+
+  <div class="week-nav" id="weekNav">
+    <button class="day-tab" onclick="showDay('seg')"><span class="dl">S</span>Seg</button>
+    <button class="day-tab" onclick="showDay('ter')"><span class="dl">T</span>Ter</button>
+    <button class="day-tab" onclick="showDay('qua')"><span class="dl">Q</span>Qua</button>
+    <button class="day-tab" onclick="showDay('qui')"><span class="dl">Q</span>Qui</button>
+    <button class="day-tab" onclick="showDay('sex')"><span class="dl">S</span>Sex</button>
+  </div>
+
+  <div class="content" id="mainContent"></div>
 </div>
-
-<div class="week-nav" id="weekNav">
-  <button class="day-tab" onclick="showDay('seg')"><span class="dl">S</span>Seg</button>
-  <button class="day-tab" onclick="showDay('ter')"><span class="dl">T</span>Ter</button>
-  <button class="day-tab" onclick="showDay('qua')"><span class="dl">Q</span>Qua</button>
-  <button class="day-tab" onclick="showDay('qui')"><span class="dl">Q</span>Qui</button>
-  <button class="day-tab" onclick="showDay('sex')"><span class="dl">S</span>Sex</button>
-</div>
-
-<div class="content" id="mainContent"></div>
 
 <script>
-const days = {
-  seg:{label:'TREINO A',title:'COSTAS · OMBRO',duration:'~55 min',series:'10 séries',tip:'<strong>Método Cluster:</strong> No cluster você faz as reps, descansa 15–20s dentro da série, e continua. É mais intenso que uma série normal — foca na contração em cada repetição.',muscles:['Dorsal','Deltóide','Trapézio'],rehab:true,exercises:[
-    {name:'Puxada Alta Aberta',target:'Dorsal — largura',sets:'Cluster + normal+drop',rest:'90s',numSets:3,tip:'SÉRIE 1 (Cluster): escolha um peso que consiga 6 reps, faça 4, descanse 15s, faça mais 4. SÉRIE 2–3 (Normal + Drop): faça até a falha, reduza 20–30% do peso imediatamente e continue.'},
-    {name:'Puxada Alta Triângulo',target:'Dorsal — espessura',sets:'Cluster + normal+drop',rest:'90s',numSets:3,tip:'Mesma lógica da puxada aberta. O triângulo ativa mais a parte interna do dorsal e o bíceps. Cotovelos puxam para baixo.'},
-    {name:'Elevação Lateral',target:'Deltóide médio',sets:'Cluster + unilateral+drop',rest:'75s',numSets:3,tip:'SÉRIES 1–2 (Cluster): bilateral, 4 reps + 15s pausa + 4 reps. SÉRIE 3 (Unilateral + Drop): um braço de cada vez até a falha, reduz o peso e finaliza. Nunca balance o corpo.'}
+// ── Color palette ─────────────────────────────────────────────────
+const COLORS = {
+  '#e8ff47': '232,255,71',
+  '#00c8ff': '0,200,255',
+  '#39ff14': '57,255,20',
+  '#ff3b3b': '255,59,59',
+  '#bf7fff': '191,127,255',
+  '#ff6eb4': '255,110,180',
+  '#ff8c00': '255,140,0',
+  '#e0e0e0': '224,224,224'
+};
+let selectedColor = '#e8ff47';
+let selectedRgb = '232,255,71';
+
+function selectColor(el) {
+  document.querySelectorAll('.color-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedColor = el.dataset.color;
+  selectedRgb = el.dataset.rgb;
+  // live preview on setup screen
+  document.documentElement.style.setProperty('--accent', selectedColor);
+  document.documentElement.style.setProperty('--accent-rgb', selectedRgb);
+}
+
+// ── Setup validation ───────────────────────────────────────────────
+function validateSetup() {
+  const name = document.getElementById('sName').value.trim();
+  const terms = document.getElementById('termsCheck').checked;
+  document.getElementById('btnStart').disabled = !(name && terms);
+}
+
+['sName','sWeight','sHeight','sAge','sGoal'].forEach(id => {
+  document.getElementById(id).addEventListener('input', validateSetup);
+});
+
+function startApp() {
+  const profile = {
+    name: document.getElementById('sName').value.trim(),
+    weight: document.getElementById('sWeight').value.trim(),
+    height: document.getElementById('sHeight').value.trim(),
+    age: document.getElementById('sAge').value.trim(),
+    goal: document.getElementById('sGoal').value.trim(),
+    color: selectedColor,
+    rgb: selectedRgb
+  };
+  try { localStorage.setItem('treino_profile', JSON.stringify(profile)); } catch(e) {}
+  applyProfile(profile);
+  document.getElementById('setupScreen').classList.remove('active');
+  document.getElementById('mainApp').style.display = 'block';
+  initApp();
+}
+
+function applyProfile(profile) {
+  document.documentElement.style.setProperty('--accent', profile.color);
+  document.documentElement.style.setProperty('--accent-rgb', profile.rgb);
+  const first = profile.name.split(' ')[0];
+  document.getElementById('appHeaderName').textContent = `⚡ GYMCANA`;
+  document.title = `Gymcana – Treino ${first}`;
+  document.getElementById('heroTitle').innerHTML = `FORÇA &<br>VOLUME`;
+  const stats = [];
+  if (profile.weight) stats.push(`⚖️ <span>${profile.weight}kg</span>`);
+  if (profile.height) stats.push(`📏 <span>${profile.height}cm</span>`);
+  if (profile.age) stats.push(`🎂 <span>${profile.age} anos</span>`);
+  if (profile.goal) stats.push(`🎯 <span>${profile.goal}</span>`);
+  stats.push(`<span style="color:#ff8c42">🦵 Reabilitação joelho</span>`);
+  document.getElementById('heroStats').innerHTML = stats.map((s,i)=>`<div class="stat-chip" ${i===stats.length-1?'style="background:#1a0800;border-color:#4a2000"':''}>${s}</div>`).join('');
+}
+
+// ── Default exercises ─────────────────────────────────────────────
+const defaultDays = {
+  seg:{label:'TREINO A',title:'COSTAS · OMBRO',duration:'~55 min',series:'9 séries',tip:'<strong>Método Cluster:</strong> Faça as reps, descanse 15–20s dentro da série sem soltar o peso, e continue. É muito mais intenso que uma série normal. Foca em tensão muscular máxima.',muscles:['Dorsal','Deltóide Médio','Trapézio'],exercises:[
+    {name:'Puxada Alta Aberta',target:'Dorsal — largura',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'CLUSTER: escolha um peso que consiga ~6 reps. Faça 4 reps, descanse 15–20s, faça mais 4. Isso é 1 cluster. NORMAL + DROP: faça até a falha, reduza 20–30% do peso imediatamente e continue até falhar de novo.'},
+    {name:'Puxada Alta Triângulo',target:'Dorsal — espessura e bíceps',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'Mesma lógica da puxada aberta. O triângulo ativa mais a parte interna do dorsal e o bíceps. Cotovelos puxam para baixo e para os lados do tronco.'},
+    {name:'Elevação Lateral',target:'Deltóide médio — largura de ombros',sets:'3 séries (2 cluster + 1 unilateral+drop)',rest:'75s',numSets:3,tip:'SÉRIES 1–2 (Cluster bilateral): 4 reps + 15s pausa + 4 reps. SÉRIE 3 (Unilateral + Drop): um braço de cada vez até a falha, reduz o peso e finaliza. Nunca balance o corpo — movimento lento e controlado.'}
   ]},
-  ter:{label:'TREINO B',title:'PEITO · TRÍCEPS',duration:'~50 min',series:'9 séries',tip:'<strong>Dica do dia:</strong> Dia de peito — foque em sentir o músculo contrair a cada rep, não apenas empurrar o peso. Desça o supino de forma controlada.',muscles:['Peitoral','Tríceps'],rehab:true,exercises:[
-    {name:'Supino Reto com Halteres',target:'Peitoral — foco total',sets:'4 × 8–10',rest:'90s',numSets:4,tip:'Controle a descida por 2s. Sem travar os cotovelos no topo. Sinta o peito apertando. Edite este exercício ou exclua se quiser trocar.'},
-    {name:'Crucifixo Inclinado',target:'Peitoral superior',sets:'3 × 12',rest:'75s',numSets:3,tip:'Inclinação de 30°. Abra os braços com cotovelos levemente flexionados, sinta o alongamento do peito. Edite conforme seu treino.'},
-    {name:'Tríceps Pulley Corda',target:'Tríceps — todas as cabeças',sets:'3 × 12',rest:'60s',numSets:3,tip:'Cotovelos fixos ao lado do corpo. Abre a corda no final da descida. Edite ou exclua se não for parte do seu treino.'}
+  ter:{label:'TREINO B',title:'PEITO · TRÍCEPS',duration:'~50 min',series:'10 séries',tip:'<strong>Dica do dia:</strong> Dia de peito — desça o supino de forma controlada (2s na descida). Sinta o peitoral alongar na fase negativa. Isso é o que gera hipertrofia de verdade.',muscles:['Peitoral','Tríceps'],exercises:[
+    {name:'Supino Reto com Halteres',target:'Peitoral — foco total',sets:'4 × 8–10',rest:'90s',numSets:4,tip:'Controle a descida por 2s. Sem travar os cotovelos no topo. Sinta o peito apertando. Edite ou troque por outro exercício de peito se quiser.'},
+    {name:'Supino Inclinado com Halteres',target:'Peitoral superior',sets:'3 × 10–12',rest:'75s',numSets:3,tip:'Inclinação de 30–45°. Evite abertura excessiva dos cotovelos. Edite conforme seu treino.'},
+    {name:'Tríceps Pulley Corda',target:'Tríceps — todas as cabeças',sets:'3 × 12',rest:'60s',numSets:3,tip:'Cotovelos fixos ao lado do corpo. Abre a corda no final da descida. Edite ou exclua se não for do seu treino.'}
   ]},
-  qua:{label:'DESCANSO',title:'RECUPERAÇÃO ATIVA',duration:'—',series:'—',tip:'<strong>Reabilitação de joelho:</strong> Aproveite para trabalhar mobilidade do joelho com orientação do seu fisioterapeuta. Sem treino de carga hoje.',muscles:[],rehab:true,exercises:[]},
-  qui:{label:'TREINO C',title:'BÍCEPS · ANTEBRAÇO · CORE',duration:'~45 min',series:'9 séries',tip:'<strong>Dica do dia:</strong> Dia de braços — não balance o corpo para levantar o peso. Movimento limpo vale mais do que peso alto com má execução.',muscles:['Bíceps','Braquial','Core'],rehab:true,exercises:[
-    {name:'Rosca Direta com Barra',target:'Bíceps — massa',sets:'4 × 10–12',rest:'75s',numSets:4,tip:'Cotovelos fixos ao lado do corpo. Suba até 90°, desça devagar (3 segundos na descida). Edite conforme seu treino.'},
-    {name:'Rosca Martelo com Halteres',target:'Braquial e antebraço',sets:'3 × 12',rest:'60s',numSets:3,tip:'Pegada neutra (como um martelo). Trabalha o braquial que empurra o bíceps para cima visualmente.'},
-    {name:'Prancha Abdominal',target:'Core — estabilização',sets:'3 × 45s',rest:'45s',numSets:3,tip:'Mantenha o corpo reto da cabeça ao calcanhar. Ative o abdômen e não deixe o quadril subir ou cair. Ótimo para estabilidade do joelho.'}
+  qua:{label:'DESCANSO',title:'RECUPERAÇÃO ATIVA',duration:'—',series:'—',tip:'<strong>⚠️ Reabilitação do joelho:</strong> Sem treino de carga hoje. Aproveite para mobilidade e fisioterapia com orientação médica. O descanso faz parte do treino.',muscles:[],exercises:[]},
+  qui:{label:'TREINO C',title:'BÍCEPS · CORE',duration:'~45 min',series:'9 séries',tip:'<strong>Dica do dia:</strong> Dia de braços — movimento limpo vale mais do que peso alto. Não balance o corpo para levantar. Cotovelos fixos o tempo todo.',muscles:['Bíceps','Braquial','Core'],exercises:[
+    {name:'Rosca Direta com Barra',target:'Bíceps — massa e volume',sets:'4 × 10–12',rest:'75s',numSets:4,tip:'Cotovelos fixos ao lado do corpo. Suba até 90°, desça devagar — 3 segundos na descida. Edite conforme seu treino.'},
+    {name:'Rosca Martelo com Halteres',target:'Braquial e antebraço',sets:'3 × 12',rest:'60s',numSets:3,tip:'Pegada neutra (como um martelo). Trabalha o braquial, que empurra o bíceps para cima visualmente.'},
+    {name:'Prancha Abdominal',target:'Core — estabilização',sets:'3 × 45s',rest:'45s',numSets:3,tip:'Corpo reto da cabeça ao calcanhar. Ative o abdômen, não deixe o quadril subir nem cair. Ótimo para estabilidade e reabilitação.'}
   ]},
-  sex:{label:'TREINO D',title:'COSTAS · OMBRO',duration:'~55 min',series:'10 séries',tip:'<strong>Repetição do Treino A:</strong> Tente aumentar o peso em pelo menos 1 exercício em relação à segunda. Sobrecarga progressiva = crescimento.',muscles:['Dorsal','Deltóide','Trapézio'],rehab:true,exercises:[
-    {name:'Puxada Alta Aberta',target:'Dorsal — largura',sets:'Cluster + normal+drop',rest:'90s',numSets:3,tip:'Segunda sessão da semana. Tente aumentar o peso do cluster em relação à segunda-feira.'},
-    {name:'Puxada Alta Triângulo',target:'Dorsal — espessura',sets:'Cluster + normal+drop',rest:'90s',numSets:3,tip:'Mesma execução da segunda. Foco na contração do dorsal no ponto mais baixo do movimento.'},
-    {name:'Elevação Lateral',target:'Deltóide médio',sets:'Cluster + unilateral+drop',rest:'75s',numSets:3,tip:'Tente aumentar o peso do cluster em relação à segunda. Controle total do movimento.'}
+  sex:{label:'TREINO A2',title:'COSTAS · OMBRO',duration:'~55 min',series:'9 séries',tip:'<strong>Segunda sessão de Costas + Ombro:</strong> Tente aumentar o peso no cluster em relação à segunda. Sobrecarga progressiva = crescimento real.',muscles:['Dorsal','Deltóide Médio','Trapézio'],exercises:[
+    {name:'Puxada Alta Aberta',target:'Dorsal — largura',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'Segunda sessão da semana. Tente aumentar o peso do cluster em relação à segunda-feira.'},
+    {name:'Puxada Alta Triângulo',target:'Dorsal — espessura e bíceps',sets:'3 séries (cluster + normal+drop)',rest:'90s',numSets:3,tip:'Mesma execução da segunda. Foco na contração do dorsal no ponto mais baixo do movimento.'},
+    {name:'Elevação Lateral',target:'Deltóide médio — largura de ombros',sets:'3 séries (2 cluster + 1 unilateral+drop)',rest:'75s',numSets:3,tip:'Tente aumentar o peso do cluster em relação à segunda. Nunca balance o corpo.'}
   ]}
 };
 
+// ── State ─────────────────────────────────────────────────────────
+let days = loadDays();
 const completedExercises = {};
 const openHistories = {};
 let currentDay = null;
 const todayMap = [null,'seg','ter','qua','qui','sex',null];
 const todayKey = todayMap[new Date().getDay()];
 
-function weightKey(k,i){return 'gymcana_w_'+k+'_'+i;}
+function loadDays() {
+  try { const s=localStorage.getItem('gymcana_luca_days_v1'); if(s) return JSON.parse(s); } catch(e){}
+  return JSON.parse(JSON.stringify(defaultDays));
+}
+function saveDays() { try{localStorage.setItem('gymcana_luca_days_v1',JSON.stringify(days));}catch(e){} }
+function weightKey(k,i){return `gymcana_luca_w_${k}_${i}`;}
 function saveWeights(dk,idx,arr){
   const k=weightKey(dk,idx);
   const ex=JSON.parse(localStorage.getItem(k)||'[]');
@@ -294,17 +462,17 @@ function saveExercise(){
   const rest=document.getElementById('editRest').value.trim()||'60s';
   const tip=document.getElementById('editTip').value.trim();
   if(!name){alert('Digite o nome do exercício.');return;}
-  const exObj={name,target:target||'Músculo alvo',sets:numSets+' × '+reps,rest,numSets,tip};
+  const exObj={name,target:target||'Músculo alvo',sets:`${numSets} × ${reps}`,rest,numSets,tip};
   if(editingNew) days[dk].exercises.push(exObj);
   else days[dk].exercises[idx]=exObj;
-  closeEdit();render(dk);
+  saveDays();closeEdit();render(dk);
 }
 function deleteExercise(){
   const dk=document.getElementById('editDayKey').value;
   const idx=parseInt(document.getElementById('editExIdx').value);
   if(!confirm('Excluir este exercício?'))return;
   days[dk].exercises.splice(idx,1);
-  closeEdit();render(dk);
+  saveDays();closeEdit();render(dk);
 }
 function showDay(key){
   currentDay=key;
@@ -313,75 +481,101 @@ function showDay(key){
 }
 function toggleExpand(el){el.classList.toggle('expanded');}
 function toggleExercise(dk,idx){
-  const k=dk+'_'+idx;completedExercises[k]=!completedExercises[k];render(dk);
+  const k=`${dk}_${idx}`;completedExercises[k]=!completedExercises[k];render(dk);
 }
 function toggleHistory(dk,idx){
-  const k=dk+'_'+idx;openHistories[k]=!openHistories[k];
-  const p=document.getElementById('hist_'+dk+'_'+idx);
+  const k=`${dk}_${idx}`;openHistories[k]=!openHistories[k];
+  const p=document.getElementById(`hist_${dk}_${idx}`);
   if(p)p.classList.toggle('open',!!openHistories[k]);
 }
 function saveWeightEntry(dk,idx,numSets){
   const w=[];
-  for(let s=0;s<numSets;s++){const inp=document.getElementById('w_'+dk+'_'+idx+'_'+s);w.push(inp?inp.value.trim():'');}
+  for(let s=0;s<numSets;s++){const inp=document.getElementById(`w_${dk}_${idx}_${s}`);w.push(inp?inp.value.trim():'');}
   if(w.every(x=>!x))return;
   saveWeights(dk,idx,w);
-  const c=document.getElementById('confirm_'+dk+'_'+idx);
+  const c=document.getElementById(`confirm_${dk}_${idx}`);
   if(c){c.style.display='block';setTimeout(()=>c.style.display='none',2000);}
-  if(openHistories[dk+'_'+idx]){const p=document.getElementById('hist_'+dk+'_'+idx);if(p)p.innerHTML=buildHistoryHTML(dk,idx);}
+  if(openHistories[`${dk}_${idx}`]){const p=document.getElementById(`hist_${dk}_${idx}`);if(p)p.innerHTML=buildHistoryHTML(dk,idx);}
 }
 function buildHistoryHTML(dk,idx){
   const h=getHistory(dk,idx);
-  if(!h.length)return '<div class="history-title">📅 Histórico</div><div class="h-empty">Nenhum registro ainda.</div>';
-  return '<div class="history-title">📅 Últimas sessões</div>'+h.map(e=>'<div class="history-entry"><span class="h-date">'+e.date+'</span><div class="h-sets">'+e.sets.map((w,i)=>w?'<span class="h-set-badge">S'+(i+1)+': '+w+'kg</span>':'').join('')+'</div></div>').join('');
+  if(!h.length)return '<div class="history-title">📅 Histórico</div><div class="h-empty">Nenhum registro ainda. Salve seus pesos acima!</div>';
+  return '<div class="history-title">📅 Últimas sessões</div>'+h.map(e=>`<div class="history-entry"><span class="h-date">${e.date}</span><div class="h-sets">${e.sets.map((w,i)=>w?`<span class="h-set-badge">S${i+1}: ${w}kg</span>`:'').join('')}</div></div>`).join('');
 }
 function render(key){
   const content=document.getElementById('mainContent');
   const day=days[key];
-  if(!day){content.innerHTML='<div class="rest-screen"><span class="rest-icon">😴</span><h2>DESCANSO</h2><p>Recuperação é onde o músculo cresce. Hidrate-se e durma bem.</p></div>';return;}
-
+  if(!day){content.innerHTML=`<div class="rest-screen"><span class="rest-icon">😴</span><h2>DIA DE DESCANSO</h2><p>Recuperação é onde o músculo cresce. Hidrate-se, coma bem e durma pelo menos 7–8h.</p></div>`;return;}
   if(day.exercises.length===0){
-    content.innerHTML='<div class="rest-screen"><span class="rest-icon">🦵</span><h2>RECUPERAÇÃO ATIVA</h2><p>Sem treino de carga hoje. Mobilidade e fisioterapia do joelho conforme orientação médica.</p></div>'
-    +'<div class="content" style="padding-top:0"><div class="warning-box"><strong>⚠️ Atenção ao joelho:</strong> Siga as orientações do seu fisioterapeuta. Não force movimentos que causem dor. A recuperação total é prioridade.</div></div>';
+    content.innerHTML=`<div class="rest-screen"><span class="rest-icon">🦵</span><h2>RECUPERAÇÃO ATIVA</h2><p>Sem treino de carga hoje. Mobilidade e fisioterapia do joelho conforme orientação médica.</p></div><div style="padding:0 17px"><div style="background:#1a0800;border:1px solid #4a2000;border-left:3px solid #ff8c42;border-radius:8px;padding:10px 13px;font-size:12px;color:#ffb47a;line-height:1.5;margin-top:16px"><strong style="color:#ff8c42">⚠️ Atenção ao joelho:</strong> Siga as orientações do seu fisioterapeuta. Não force movimentos que causem dor ou desconforto. A recuperação total é prioridade.</div></div>`;
     return;
   }
-
   const total=day.exercises.length;
-  const done=day.exercises.filter((_,i)=>completedExercises[key+'_'+i]).length;
+  const done=day.exercises.filter((_,i)=>completedExercises[`${key}_${i}`]).length;
   const pct=Math.round((done/total)*100);
   const isToday=key===todayKey;
-
-  const rehabNote = day.rehab ? '<div class="warning-box"><strong>⚠️ Cuidado com o joelho:</strong> Nenhum exercício de carga para perna hoje. Avise seu personal ou fisio antes de adicionar qualquer movimento de agachamento, extensão ou flexão de joelho.</div>' : '';
-
   const exHtml=day.exercises.map((ex,i)=>{
-    const isDone=!!completedExercises[key+'_'+i];
-    const histOpen=!!openHistories[key+'_'+i];
-    const isCluster=ex.sets.toLowerCase().includes('cluster');
+    const isDone=!!completedExercises[`${key}_${i}`];
+    const histOpen=!!openHistories[`${key}_${i}`];
     const inputsHTML=Array.from({length:ex.numSets},(_,s)=>{
       const h=getHistory(key,i);const lv=h.length?(h[0].sets[s]||''):'';
-      return '<div class="set-input-wrap"><span class="set-label">S'+(s+1)+'</span><input class="set-weight-input" id="w_'+key+'_'+i+'_'+s+'" type="number" inputmode="decimal" placeholder="—" value="'+lv+'" onclick="event.stopPropagation()"><span class="set-unit">kg</span></div>';
+      return `<div class="set-input-wrap"><span class="set-label">S${s+1}</span><input class="set-weight-input" id="w_${key}_${i}_${s}" type="number" inputmode="decimal" placeholder="—" value="${lv}" onclick="event.stopPropagation()"><span class="set-unit">kg</span></div>`;
     }).join('');
-    return '<div class="exercise-card '+(isDone?'done':'')+'"><div class="card-main" onclick="toggleExpand(this.parentElement)"><div class="ex-top"><span class="ex-num">'+String(i+1).padStart(2,'0')+'</span><div class="ex-info"><div class="ex-name">'+ex.name+'</div><div class="ex-target">'+ex.target+'</div><div class="ex-sets"><span class="set-pill '+(isCluster?'cluster':'')+'">'+ex.sets+'</span><span class="set-pill">⏱ '+ex.rest+' descanso</span></div></div><div class="card-actions"><button class="edit-btn" onclick="event.stopPropagation();openEdit(''+key+'','+i+')">✏️</button><button class="check-btn" onclick="event.stopPropagation();toggleExercise(''+key+'','+i+')">'+(isDone?'✓':'')+'</button></div></div>'+(ex.tip?'<div class="ex-tip-text">💡 '+ex.tip+'</div>':'')+'</div><div class="weight-section" onclick="event.stopPropagation()"><div class="weight-header"><span class="weight-title">⚖️ Pesos usados hoje</span><span class="weight-date">'+new Date().toLocaleDateString('pt-BR')+'</span></div><div class="sets-grid">'+inputsHTML+'</div><div class="weight-actions"><button class="btn-save-weight" onclick="saveWeightEntry(''+key+'','+i+','+ex.numSets+')">💾 Salvar</button><button class="btn-history" onclick="toggleHistory(''+key+'','+i+')">📅 Histórico</button></div><div class="save-confirm" id="confirm_'+key+'_'+i+'">✅ Pesos salvos!</div><div class="history-panel '+(histOpen?'open':'')+'" id="hist_'+key+'_'+i+'">'+buildHistoryHTML(key,i)+'</div></div></div>';
+    return `<div class="exercise-card ${isDone?'done':''}"><div class="card-main" onclick="toggleExpand(this.parentElement)"><div class="ex-top"><span class="ex-num">${String(i+1).padStart(2,'0')}</span><div class="ex-info"><div class="ex-name">${ex.name}</div><div class="ex-target">${ex.target}</div><div class="ex-sets"><span class="set-pill">${ex.sets} reps</span><span class="set-pill">⏱ ${ex.rest} descanso</span></div></div><div class="card-actions"><button class="edit-btn" onclick="event.stopPropagation();openEdit('${key}',${i})">✏️</button><button class="check-btn" onclick="event.stopPropagation();toggleExercise('${key}',${i})">${isDone?'✓':''}</button></div></div>${ex.tip?`<div class="ex-tip-text">💡 ${ex.tip}</div>`:''}</div><div class="weight-section" onclick="event.stopPropagation()"><div class="weight-header"><span class="weight-title">⚖️ Pesos usados hoje</span><span class="weight-date">${new Date().toLocaleDateString('pt-BR')}</span></div><div class="sets-grid">${inputsHTML}</div><div class="weight-actions"><button class="btn-save-weight" onclick="saveWeightEntry('${key}',${i},${ex.numSets})">💾 Salvar</button><button class="btn-history" onclick="toggleHistory('${key}',${i})">📅 Histórico</button></div><div class="save-confirm" id="confirm_${key}_${i}">✅ Pesos salvos!</div><div class="history-panel ${histOpen?'open':''}" id="hist_${key}_${i}">${buildHistoryHTML(key,i)}</div></div></div>`;
   }).join('');
-
-  content.innerHTML=
-    '<div style="margin-bottom:12px">'+(isToday?'<div class="today-marker">HOJE</div>':'')+'<div class="training-badge">⚡ '+day.label+'</div><div class="training-title">'+day.title+'</div><div class="training-meta"><span>🕐 '+day.duration+'</span><span>📊 '+day.series+'</span><span>💪 '+total+' exercícios</span></div></div>'
-    +'<div class="progress-bar-wrap"><div class="progress-top"><span>Progresso</span><strong>'+done+'/'+total+' — '+pct+'%</strong></div><div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div></div>'
-    +'<div class="tip-box">💬 '+day.tip+'</div>'
-    + rehabNote
-    +'<div class="muscles">'+day.muscles.map(m=>'<span class="muscle-tag">'+m+'</span>').join('')+'</div>'
-    +'<div class="section-label">Exercícios · toque para expandir</div>'
-    + exHtml
-    +'<button class="btn-add-ex" onclick="openNewExercise(''+key+'')">➕ Adicionar exercício</button>'
-    +'<div style="margin-top:22px"><div class="section-label">Nutrição — Fase de ganho de massa</div>'
-    +'<div class="nutrition-card"><h4>☀️ Pré-treino (antes das 12h)</h4><p>Carboidrato + proteína: arroz com frango, ou pão com ovo. Coma <strong>1–2h antes</strong> do treino da tarde. Hidrate bem.</p></div>'
-    +'<div class="nutrition-card"><h4>💪 Pós-treino</h4><p>Proteína imediatamente após: <span class="alert">shake, frango, atum ou ovos</span>. Janela anabólica — não pule essa refeição.</p></div>'
-    +'<div class="nutrition-card"><h4>🦵 Reabilitação do joelho</h4><p>Colágeno com vitamina C ajuda na recuperação de ligamentos e tendões. Converse com seu médico sobre suplementação.</p></div></div>';
+  content.innerHTML=`
+    <div style="margin-bottom:12px">
+      ${isToday?'<div class="today-marker">HOJE</div>':''}
+      <div class="training-badge">⚡ ${day.label}</div>
+      <div class="training-title">${day.title}</div>
+      <div class="training-meta"><span>🕐 ${day.duration}</span><span>📊 ${day.series}</span><span>💪 ${total} exercícios</span></div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-top"><span>Progresso</span><strong>${done}/${total} — ${pct}%</strong></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>
+    <div class="tip-box">💬 ${day.tip}</div>
+    <div class="muscles">${day.muscles.map(m=>`<span class="muscle-tag">${m}</span>`).join('')}</div>
+    <div class="section-label">Exercícios · toque para expandir</div>
+    ${exHtml}
+    <button class="btn-add-ex" onclick="openNewExercise('${key}')">➕ Adicionar novo exercício</button>
+    <div style="margin-top:22px">
+      <div class="section-label">Nutrição</div>
+      <div class="nutrition-card"><h4>☀️ Pré-treino (antes das 12h)</h4><p>Carboidrato + proteína: arroz com frango ou pão com ovos. Coma <strong>1–2h antes</strong> do treino da tarde. Hidrate bem.</p></div>
+      <div class="nutrition-card"><h4>💪 Pós-treino (imediatamente após)</h4><p>Proteína logo depois: <span class="alert">frango, atum, ovos ou shake</span>. A janela anabólica é real — não pule essa refeição.</p></div>
+      <div class="nutrition-card"><h4>🦵 Dica extra — Reabilitação</h4><p>Colágeno hidrolisado com vitamina C ajuda na recuperação de ligamentos e tendões. Converse com seu médico ou nutricionista sobre essa suplementação.</p></div>
+    </div>`;
 }
 
-const start=todayKey||'seg';
-['seg','ter','qua','qui','sex'].forEach((d,i)=>document.querySelectorAll('.day-tab')[i].classList.toggle('active',d===start));
-currentDay=start;
-render(start);
+// ── Init ──────────────────────────────────────────────────────────
+function initApp(){
+  const start=todayKey||'seg';
+  ['seg','ter','qua','qui','sex'].forEach((d,i)=>document.querySelectorAll('.day-tab')[i].classList.toggle('active',d===start));
+  currentDay=start;
+  render(start);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────
+(function(){
+  // Perfil fixo do Luca — já pré-carregado
+  const lucaProfile = {
+    name: 'Luca Dacol Bernardes',
+    weight: '84',
+    height: '173',
+    age: '16',
+    goal: 'Ganhar massa muscular',
+    color: '#e8ff47',
+    rgb: '232,255,71'
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem('treino_profile')||'null');
+    const p = (saved && saved.name) ? saved : lucaProfile;
+    if (!saved || !saved.name) localStorage.setItem('treino_profile', JSON.stringify(lucaProfile));
+    applyProfile(p);
+  } catch(e) {
+    applyProfile(lucaProfile);
+  }
+  document.getElementById('setupScreen').classList.remove('active');
+  document.getElementById('mainApp').style.display='block';
+  initApp();
+})();
 </script>
 </body>
 </html>
